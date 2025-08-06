@@ -1,0 +1,31 @@
+# Import necessary libraries
+import scipy
+import pandas as pd
+import umap
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+# Load your dataset
+file_path = '/Users/Megan/Desktop/Int_Med_Test.xlsx'
+#df = pd.read_excel(file_path, sheet_name='Sheet1')
+df = pd.read_excel(file_path, sheet_name='Sheet1', engine='openpyxl')
+
+# Select the relevant columns for UMAP
+# Assuming you want to apply UMAP on all columns except the first column (if that's an index or identifier)
+X = df.iloc[:, :]  # Adjust if you have non-numeric or index columns that need exclusion
+
+# Standardize the data before applying UMAP
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Apply UMAP
+reducer = umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, random_state=42)
+embedding = reducer.fit_transform(X_scaled)
+
+# Plot the UMAP embedding
+plt.figure(figsize=(10, 7))
+plt.scatter(embedding[:, 0], embedding[:, 1], s=5, cmap='Spectral')
+plt.title('UMAP projection of the dataset', fontsize=15)
+plt.xlabel('UMAP 1')
+plt.ylabel('UMAP 2')
+plt.show()
